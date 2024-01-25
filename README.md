@@ -40,7 +40,41 @@ De esta manera, independiente al movimiento que tenga el Player, al presionar la
 Con una masa de 1:
 ![Screenshot_20240125_101459.png](Media%2FScreenshot_20240125_101459.png)
 
-Con un masa de 0.2:
+Con una masa de 0.2:
 ![Screenshot_20240125_101558.png](Media%2FScreenshot_20240125_101558.png)
 
+## La cámara haga un seguimiento diferente al Player, como sería en primera persona? Que otro seguimiento se te ocurre?
 
+Para hacer un seguimiento en primera persona, arrastramos la cámara al Player, de manera que la cámara quede dentro del Player.
+
+![Screenshot_20240125_103032.png](Media%2FScreenshot_20240125_103032.png)
+
+De esta manera, la cámara se moverá junto al Player, dando la sensación de que es una cámara en primera persona. Es importante asegurarnos que la posición de la cámara sea la misma del Player:
+
+![Screenshot_20240125_103756.png](Media%2FScreenshot_20240125_103756.png)
+
+Y así se vería el juego:
+
+![Screenshot_20240125_104003.png](Media%2FScreenshot_20240125_104003.png)
+
+**Otro tipo de Seguimiento:**
+
+Al movernos a la izquierda o derecha, que nuestra cámara también lo haga en el eje del plano.
+
+```csharp
+    // LateUpdate is called once per frame after all Update functions have been completed.
+    void LateUpdate()
+    {
+        float horizontalInput = Input.GetAxis("Horizontal"); // obtén la entrada horizontal del jugador
+
+        // Aplica la rotación al offset en función de la entrada horizontal
+        offset = Quaternion.Euler(0, horizontalInput * rotationSpeed, 0) * offset;
+
+        // Actualiza la posición y la rotación de la cámara
+        transform.position = player.transform.position + offset;
+        transform.LookAt(player.transform.position);
+    }
+```
+Con esto, al movernos a la izquierda o derecha, la cámara también lo hará:
+
+![Screenshot_20240125_105741.png](Media%2FScreenshot_20240125_105741.png)
