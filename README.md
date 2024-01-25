@@ -43,7 +43,7 @@ Con una masa de 1:
 Con una masa de 0.2:
 ![Screenshot_20240125_101558.png](Media%2FScreenshot_20240125_101558.png)
 
-## La cámara haga un seguimiento diferente al Player, como sería en primera persona? Que otro seguimiento se te ocurre?
+## 2. La cámara haga un seguimiento diferente al Player, como sería en primera persona? Que otro seguimiento se te ocurre?
 
 Para hacer un seguimiento en primera persona, arrastramos la cámara al Player, de manera que la cámara quede dentro del Player.
 
@@ -62,6 +62,8 @@ Y así se vería el juego:
 Al movernos a la izquierda o derecha, que nuestra cámara también lo haga en el eje del plano.
 
 ```csharp
+    public float rotationSpeed = 2.0f; // velocidad de rotación
+
     // LateUpdate is called once per frame after all Update functions have been completed.
     void LateUpdate()
     {
@@ -78,3 +80,67 @@ Al movernos a la izquierda o derecha, que nuestra cámara también lo haga en el
 Con esto, al movernos a la izquierda o derecha, la cámara también lo hará:
 
 ![Screenshot_20240125_105741.png](Media%2FScreenshot_20240125_105741.png)
+
+## 3. La cámara se mueve independientemente del Player, ¿como sería que la cámara se moviera alrededor de la mesa?
+
+Para hacer independiente nuestra cámara, nos dirigimos al "Input Actions", y en el apartado de Player, borramos los atajos con ASWD (liberando así estas teclas, y sólo moverlo con las flechas de dirección).
+
+![Screenshot_20240125_111552.png](Media%2FScreenshot_20240125_111552.png)
+
+En nuestro script de cámara, realizamos las siguientes modificaciones:
+
+```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CameraController : MonoBehaviour
+{
+	public GameObject player; // referencia al jugador
+    public float cameraSpeed = 5.0f; // velocidad de la cámara
+    private Vector3 offset; // distancia entre la cámara y el jugador
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        offset = transform.position - player.transform.position; // calcula la distancia entre la cámara y el jugador
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        MoveCameraWithInput();
+    }
+
+    void MoveCameraWithInput()
+    {
+		if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)){
+			float horizontalInput = Input.GetAxis("Horizontal");
+        	float verticalInput = Input.GetAxis("Vertical");
+
+        	// Calcula el desplazamiento de la cámara en función de las entradas de teclado
+        	Vector3 cameraMovement = new Vector3(horizontalInput, 0, verticalInput) * cameraSpeed * Time.deltaTime;
+
+        	// Aplica el desplazamiento a la posición de la cámara
+        	transform.Translate(cameraMovement, Space.World);
+		}
+    }
+}
+```
+
+Como se puede observar en el código, Nos aseguramos que el usuario toque las teclas ASWD, a que si no, la cámara también cogera como entrada horizontal y vertical las flechas de dirección, alterando el movimiento de la cámara también al mover el Player.
+
+***Vista previa de nuestra independencia de movimientos:***
+
+![Screenshot_20240125_112806.png](Media%2FScreenshot_20240125_112806.png)
+
+![Screenshot_20240125_112827.png](Media%2FScreenshot_20240125_112827.png)
+
+---
+
+>[!WARNING]
+> Los Scripts de este repositorio no contienen las modificaciones comentadas en este documento, por lo que si se desea probar el proyecto con las modificaciones, se deberá realizar manualmente.
+
+---
+
+# No olvides clafisicar con un 10 este repositorio si te ha sido de ayuda! :smile:
